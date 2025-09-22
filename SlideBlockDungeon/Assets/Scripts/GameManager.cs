@@ -38,8 +38,6 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject gameClearPanel;     //ゲームクリアパネル表示・非表示用
     [Header("ゲームオーバーパネルをセット")]
     [SerializeField] private GameObject gameOverPanel;      //ゲームオーバーパネル表示・非表示用
-    [Header("ステージセレクトの名前入力オブジェセット")]
-    [SerializeField] private GameObject inputPanel;         //ランキングに登録する名前入力
     [Header("視野移動用スライダーセット")]
     [SerializeField] private GameObject slider;             //スライダーが必要じゃないステージでは非表示
 
@@ -253,7 +251,7 @@ public class GameManager : MonoBehaviour
 
     #endregion
 
-    #region
+    #region チュートリアル用
 
     void FirstTutorial()
     {
@@ -329,17 +327,8 @@ public class GameManager : MonoBehaviour
                 }
                 else
                 {
-                    int stage = StageIndex.Instance.GetIndex();
-                    if(OffLineRankingManager.Instance.IsHightScore(stage, clearTimeResult))
-                    {
-                        inputPanel.SetActive(true); //名前入力パネル表示
-                        Time.timeScale = 0f;        //名前入力中は止める
-                    }
-                    else
-                    {
-                        //リザルトシーンへ遷移
-                        StartCoroutine(ResultLoad());
-                    }
+                    //リザルトシーンへ遷移
+                    StartCoroutine(ResultLoad());
                 }
                 SoundManager.Instance.SePlay(GAMECLEAR);
                 sePlay = true;
@@ -364,24 +353,6 @@ public class GameManager : MonoBehaviour
 
     #endregion
 
-    #region 名前が決定されたら
-
-    public void NameEnter()
-    {
-        //ランキング登録処理
-        int stage = StageIndex.Instance.GetIndex();
-        OffLineRankingManager.Instance.AddScore(stage, InputManager.playerName, clearTimeResult);
-
-        //入力パネルを閉じて時間を再開
-        inputPanel.SetActive(false);
-        Time.timeScale = 1f;
-
-        //リザルトシーンへ遷移
-        StartCoroutine(ResultLoad());
-    }
-
-    #endregion
-
     #region ゲームリスタート
 
     public void GameReStart()
@@ -398,7 +369,7 @@ public class GameManager : MonoBehaviour
     IEnumerator ResultLoad()
     {
         if (Time.timeScale == 0f) { Time.timeScale = 1f; }
-        yield return new WaitForSeconds(3f);
+        yield return new WaitForSeconds(2.5f);
         SceneManager.LoadScene("ResultScene");
     }
 

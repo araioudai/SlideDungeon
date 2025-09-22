@@ -5,6 +5,14 @@ using System.Collections;
 
 public class ResultManager : MonoBehaviour
 {
+    #region
+
+    private const int NEXT = 0;
+    private const int ONCEAGAIN = 1;
+    private const int TITLE = 2;
+
+    #endregion
+
     #region private変数
 
     [Header("スコアテキストセット")]
@@ -13,10 +21,14 @@ public class ResultManager : MonoBehaviour
     [SerializeField] private Text rankText;
     [Header("ランクワードテキストセット")]
     [SerializeField] private Text wordsText;
+    [Header("スコア表示用パネルセット")]
+    [SerializeField] private GameObject scorePanel; //スコア表示用
+    [Header("名前入力用パネルセット")]
+    [SerializeField] private GameObject inputPanel; //ランキングに登録する名前入力
     [Header("ゲームクリア時表示ボタンセット")]
-    [SerializeField] private GameObject GameClear;
+    [SerializeField] private GameObject gameClear;
     [Header("ゲームオーバー時表示ボタンセット")]
-    [SerializeField] private GameObject GameOver;
+    [SerializeField] private GameObject gameOver;
     [Header("SE用オーディオソース／本体をセット")]
     [SerializeField] private AudioSource seSource;
     [SerializeField] private AudioClip seDecision;
@@ -29,6 +41,7 @@ public class ResultManager : MonoBehaviour
     private int stageNumber;
     private float baseTime;
     private float baseSlide;
+    private int transition;
 
     #endregion
     // Start is called before the first frame update
@@ -46,12 +59,23 @@ public class ResultManager : MonoBehaviour
     void Init()
     {
         clearTime = 0;
+        transition = 0;
         clearTime = GameManager.Instance.GetClearTimer();
         slideCount = GameManager.Instance.GetSlideCount();
         scoreText.text = "クリア　: " + clearTime.ToString("F2") + "\n\nスワイプ: " + slideCount;
         RankMeasurement();
-        if (GameManager.Instance.GetGameClear()) { GameOver.SetActive(false); GameClear.SetActive(true); }
-        else { GameClear.SetActive(false); GameOver.SetActive(true); rankText.text = ""; wordsText.text = ""; }
+        if (GameManager.Instance.GetGameClear()) { gameOver.SetActive(false); gameClear.SetActive(true); }
+        else { gameClear.SetActive(false); gameOver.SetActive(true); rankText.text = ""; wordsText.text = ""; }
+        int stage = StageIndex.Instance.GetIndex();
+        if (OffLineRankingManager.Instance.IsHightScore(stage, clearTime))
+        {
+            inputPanel.SetActive(true); //名前入力パネル表示
+            Time.timeScale = 0f;        //名前入力中は止める
+        }
+        else
+        {
+            scorePanel.SetActive(true);
+        }
     }
 
     void RankMeasurement()
@@ -134,13 +158,33 @@ public class ResultManager : MonoBehaviour
 
     #endregion
 
-    #region タイトルへ
+    #region タイトルへが押された
+
     public void PushTitle()
     {
         seSource.PlayOneShot(seDecision);
         StageIndex.Instance.SetIndex(0);
         StartCoroutine(TitleSceneLoad());
     }
+
+    #endregion
+
+    #region 名前が決定されたら
+
+    public void NameEnter()
+    {
+        //ランキング登録処理
+        int stage = StageIndex.Instance.GetIndex();
+        OffLineRankingManager.Instance.AddScore(stage, InputManager.playerName, clearTime);
+
+        //入力パネルを閉じて時間を再開
+        inputPanel.SetActive(false);
+        Time.timeScale = 1f;
+
+        seSource.PlayOneShot(seDecision);
+        scorePanel.SetActive(true);
+    }
+
     #endregion
 
     #region ゲームシーンロード遅延用
