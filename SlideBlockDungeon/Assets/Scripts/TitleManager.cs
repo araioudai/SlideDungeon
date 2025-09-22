@@ -92,6 +92,7 @@ public class TitleManager : MonoBehaviour
 
     void Init()
     {
+        Application.targetFrameRate = 120;
         level = 0;
         isButton = false;
         if (Time.timeScale == 0f) { Time.timeScale = 1f; }
