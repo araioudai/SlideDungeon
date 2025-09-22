@@ -67,7 +67,7 @@ public class ResultManager : MonoBehaviour
         if (GameManager.Instance.GetGameClear()) { gameOver.SetActive(false); gameClear.SetActive(true); }
         else { gameClear.SetActive(false); gameOver.SetActive(true); rankText.text = ""; wordsText.text = ""; }
         int stage = StageIndex.Instance.GetIndex();
-        if (OffLineRankingManager.Instance.IsHightScore(stage, clearTime))
+        if (OffLineRankingManager.Instance.IsHightScore(stage, clearTime) && GameManager.Instance.GetGameClear())
         {
             inputPanel.SetActive(true); //名前入力パネル表示
             Time.timeScale = 0f;        //名前入力中は止める
