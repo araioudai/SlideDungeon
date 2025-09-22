@@ -37,6 +37,7 @@ public class StageIndex : MonoBehaviour
 
     #endregion
 
+    #region Unityイベント関数
     void Awake()
     {
         if (Instance != null && Instance != this)
@@ -59,7 +60,9 @@ public class StageIndex : MonoBehaviour
     {
 
     }
+    #endregion
 
+    #region Start呼び出し関数
     void Init()
     {
         if (SceneManager.GetActiveScene().name == "TitleScene")
@@ -67,4 +70,5 @@ public class StageIndex : MonoBehaviour
             firstTime = false;
         }
     }
+    #endregion
 }
