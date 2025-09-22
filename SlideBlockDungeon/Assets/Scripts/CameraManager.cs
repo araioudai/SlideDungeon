@@ -61,6 +61,7 @@ public class CameraManager : MonoBehaviour
     {
         if (target == null) return;                          //追従対象がセットされていなければ処理終了
         if (!GameManager.Instance.GetIsFollow()) { return; } //追従する必要がないステージなら処理終了
+        if (isSlider) { return; }
 
         Vector3 pos = transform.position;
         Vector3 tpos = target.position;
