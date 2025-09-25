@@ -75,15 +75,6 @@ public class CameraManager : MonoBehaviour
                                tpos.x - Mathf.Sign(dx) * deadZone.x,
                                followSpeed * Time.deltaTime);
         }
-
-        // ------ Y 軸の処理（必要なら） ------
-        /*float dy = tpos.y - pos.y;
-        if (Mathf.Abs(dy) > deadZone.y)
-        {
-            pos.y = Mathf.Lerp(pos.y,
-                               tpos.y - Mathf.Sign(dy) * deadZone.y,
-                               followSpeed * Time.deltaTime);
-        }*/
         // カメラ位置を更新（Z軸は維持）
         transform.position = new Vector3(pos.x, pos.y, transform.position.z);
     }
@@ -108,13 +99,6 @@ public class CameraManager : MonoBehaviour
 
             //カメラの位置を更新
             transform.position = new Vector3(x, 0, -10);
-        }
-        else
-        {
-            if (GameManager.Instance.GetIsFollow())
-            {
-                //transform.position = new Vector3(player.transform.position.x, transform.position.y, -10);
-            }
         }
     }
     #endregion
